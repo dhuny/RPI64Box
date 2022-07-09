@@ -1,0 +1,119 @@
+---
+- name: Copy resetdb.php to /tmp
+  copy:
+    src: resetdb.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb.php
+  become: yes
+  become_user: "{{rpi64box_username}}" 
+  
+
+- name: Copy resetdb-x.php to /tmp
+  copy:
+    src: resetdb-x.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-x.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-x.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-x.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+- name: Copy resetdb-s.php to /tmp
+  copy:
+    src: resetdb-s.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-s.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-s.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-s.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+- name: Copy resetdb-m.php to /tmp
+  copy:
+    src: resetdb-m.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-m.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-m.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-m.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+- name: Copy restart.php to /tmp
+  copy:
+    src: restart.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move restart.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/restart.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/restart.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+
+- name: Copy resetdb-xx.php to /tmp
+  copy:
+    src: resetdb-xx.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-xx.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-xx.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-xx.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+- name: Copy resetdb-ss.php to /tmp
+  copy:
+    src: resetdb-ss.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-ss.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-ss.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-ss.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+
+  
+  
+- name: Copy resetdb-mm.php to /tmp
+  copy:
+    src: resetdb-mm.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-mm.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-mm.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-mm.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+  
