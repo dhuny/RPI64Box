@@ -1,0 +1,50 @@
+---
+#Create courses
+
+- name: check presence of '/var/www/moodle' directory
+  stat:
+    path: '/var/www/moodle'
+  register: moodle_home_dir
+# To change the path of the moodle dir change the moodlebox_moodle_source_dir 
+
+ 
+#- name: Set Developer mode on
+#  shell: 'sudo echo "\$CFG->debug = (E_ALL | E_STRICT);" >> /var/www/moodle/config.php'
+#  async: 30
+#  poll: 3
+#  ignore_errors: false
+#  when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+
+ 
+
+- name: Backup  moodle database with courses x
+  shell: 'cd ~ && sudo mysqldump -u {{rpi64box_username}} -p{{rpi64box_password}} moodle > ~/moodle-courses-x.sql'
+  async: 500
+  poll: 30
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+
+
+- name: Backup  moodle database with courses s
+  shell: 'cd ~ && sudo mysqldump -u {{rpi64box_username}} -p{{rpi64box_password}} moodle > ~/moodle-courses-s.sql'
+  async: 500
+  poll: 30
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+
+
+- name: Backup  moodle database with courses m
+  shell: 'cd ~ && sudo mysqldump -u {{rpi64box_username}} -p{{rpi64box_password}} moodle > ~/moodle-courses-m.sql'
+  async: 500
+  poll: 30
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+#- name: Create module L Courses duration set to 6000s or 100 minutes
+#  shell: 'sudo -u www-data php {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/maketestcourse.php --shortname=SIZE_L --size=L'
+#  async: 6000
+#  poll: 60
+#  ignore_errors: true
+#  when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk

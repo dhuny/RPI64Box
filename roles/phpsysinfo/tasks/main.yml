@@ -1,0 +1,26 @@
+---
+# Install Phpsysinfo
+  
+
+- name: Unarchive Phpsysinfo https://github.com/phpsysinfo/phpsysinfo/archive/v3.3.2.zip
+  unarchive:
+    src: https://github.com/phpsysinfo/phpsysinfo/archive/v3.3.2.zip
+    dest: /var/www/moodle/
+    remote_src: yes
+  become: yes
+  become_user: rpi64box
+  
+  
+- name: Move phpsysinfo-3.3.2 to phpsysinfo
+  shell: 'mv /var/www/moodle/phpsysinfo-3.3.2 /var/www/moodle/phpsysinfo'
+  
+- name: Create the  phpsysinfo.ini file
+  shell: 'mv /var/www/moodle/phpsysinfo/phpsysinfo.ini.new /var/www/moodle/phpsysinfo/phpsysinfo.ini'
+  
+  
+- name: Change permission and ownership of http://rpi64box.home/phpsysinfo to www-data
+  shell: 'sudo chown -R www-data:rpi64box {{rpi64box_moodle_source_dir}}/phpsysinfo'
+  async: 20
+  poll: 4
+  ignore_errors: false
+  

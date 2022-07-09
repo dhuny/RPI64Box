@@ -1,0 +1,8 @@
+---
+- name: install adminer latest release
+  get_url:
+    url: 'https://www.adminer.org/latest.php'
+    dest: '{{ rpi64box_moodle_source_dir }}/adminer.php'
+    owner: 'www-data'
+    group: '{{ rpi64box_username }}'
+    mode: '0664'

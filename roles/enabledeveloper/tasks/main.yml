@@ -1,0 +1,21 @@
+---
+
+- name: check presence of '/var/www/moodle' directory
+  stat:
+    path: '/var/www/moodle'
+  register: moodle_home_dir
+# To change the path of the moodle dir change the moodlebox_moodle_source_dir 
+
+- name: Forcing Developer mode in config.php -- set $CFG->debug = (E_ALL | E_STRICT); 
+  shell: sudo sed -i "# 6i\$CFG->debug = (E_ALL | E_STRICT); # if this is enabled APDEX will be lower." /var/www/moodle/config.php
+  async: 30
+  poll: 3
+  ignore_errors: false
+  when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+  
+- name: set CFG->tool_generator_users_password = moodle
+  shell: sudo sed -i "6i\$CFG->tool_generator_users_password = 'moodle';" /var/www/moodle/config.php
+  async: 30
+  poll: 3
+  ignore_errors: false
+  when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk

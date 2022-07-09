@@ -1,0 +1,6 @@
+---
+- name: create database '{{ rpi64box_moodle_db }}' for Moodle
+  mysql_db:
+    name: '{{ rpi64box_moodle_db }}'
+    state: 'present'
+  register: moodle_db_created

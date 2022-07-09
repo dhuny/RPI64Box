@@ -1,0 +1,1 @@
+rm -rf moodle/ && unzip moodle-courses.zip && `sudo chown -R www-data:moodlebox /var/www/moodle/` && `sudo mysql -e "drop database moodle;create database moodle"` && `mysql -u moodlebox -pMoodlebox4$ moodle < /var/www/moodle/moodle-courses.sql`

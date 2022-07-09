@@ -1,0 +1,8 @@
+---
+- name: copy root CA certificate
+  copy:
+    src: 'home/files/rpi64boxCA.crt'
+    dest: '/home/{{ rpi64box_username }}/files/rpi64boxCA.crt'
+    owner: '{{ rpi64box_username }}'
+    group: 'www-data'
+    mode: '0644'

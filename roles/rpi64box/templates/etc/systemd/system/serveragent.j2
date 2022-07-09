@@ -1,0 +1,10 @@
+[Unit]
+Description=Server Agent is required by Jmeter to pull Server usage info.
+
+[Service]
+ExecStart=/home/rpi64box/ServerAgent-2.2.3/./startAgent.sh
+Type=oneshot
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target

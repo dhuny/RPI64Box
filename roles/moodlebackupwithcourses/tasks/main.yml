@@ -1,0 +1,26 @@
+---
+
+- name: Purging the Moodle cache
+  shell: 'cd {{rpi64box_moodle_source_dir}} && sudo -u www-data /usr/bin/php admin/cli/purge_caches.php'
+  async: 180
+  poll: 10
+  become: yes
+  become_user: "{{rpi64box_username}}"
+
+- name: Backup  moodle database with courses
+  shell: 'cd ~ && sudo mysqldump -u {{rpi64box_username}} -p{{rpi64box_password}} moodle > ~/moodle-courses.sql'
+  async: 500
+  poll: 30
+  become: yes
+  become_user: "{{rpi64box_username}}"
+
+#- name: zip  moodle installation with courses
+#  shell: 'cd ~ && sudo zip -r moodle-courses.zip /var/www/moodle/'
+#  async: 500
+#  poll: 50
+#  become: yes
+#  become_user: "{{rpi64box_username}}"
+
+
+  
+

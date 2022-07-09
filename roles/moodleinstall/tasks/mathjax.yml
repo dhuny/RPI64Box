@@ -1,0 +1,23 @@
+---
+
+- name: get MathJax library version '{{ rpi64box_mathjax_version }}' from git repository
+  ansible.builtin.git:
+    repo: 'https://github.com/mathjax/MathJax.git'
+    dest: '{{ rpi64box_moodle_source_dir }}/lib/MathJax'
+    version: '{{ rpi64box_mathjax_version }}'
+    depth: 1
+
+- name: change MathJax library file permissions
+  ansible.builtin.file:
+    path: '{{ rpi64box_moodle_source_dir }}/lib/MathJax'
+    state: 'directory'
+    owner: 'www-data'
+    group: '{{ rpi64box_username }}'
+    mode: 'ug+w,o-w'
+    recurse: 'yes'
+
+#- name: change MathJax library URL
+#  ansible.builtin.command: >
+#    {{ moodle_config_cmd }} --component=filter_mathjaxloader --name=httpsurl --set=/lib/MathJax/MathJax.js
+#  register: mathjax_url_result
+#  changed_when: 'mathjax_url_result.rc == 0'

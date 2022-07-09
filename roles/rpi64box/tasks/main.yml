@@ -1,0 +1,51 @@
+---
+
+- name: Check if libhyperic-sigar-java is installed
+  command: dpkg-query -W libhyperic-sigar-java
+  register: my_package_check_deb
+  failed_when: my_package_check_deb.rc > 1
+  changed_when: my_package_check_deb.rc == 1
+  
+
+- name: Install libhyperic-sigar-java from https://launchpad.net/ubuntu/+source/hyperic-sigar/1.6.4+dfsg-2.1/+build/6536026/+files/libhyperic-sigar-java_1.6.4+dfsg-2.1_arm64.deb
+  shell: 'cd /tmp/ && wget https://launchpad.net/ubuntu/+source/hyperic-sigar/1.6.4+dfsg-2.1/+build/6536026/+files/libhyperic-sigar-java_1.6.4+dfsg-2.1_arm64.deb && dpkg -i /tmp/libhyperic-sigar-java_1.6.4+dfsg-2.1_arm64.deb'
+  become: root
+  when: my_package_check_deb.rc == 1
+    
+- name: Download the Last ZIP install available for 'ServerAgent' from https://github.com/undera/perfmon-agent
+  unarchive:
+    src: 'https://github.com/undera/perfmon-agent/releases/download/2.2.3/ServerAgent-2.2.3.zip'
+    dest: '/home/rpi64box/'
+    remote_src: yes
+
+- name: Set Wi-Fi Power Management OFF Service
+  template:
+    src: 'etc/systemd/system/WiFiPowerMgmtOff.j2'
+    dest: '/etc/systemd/system/WiFiPowerMgmtOff.service'
+    mode: '0644'
+#  notify: restart web services
+  
+- name: configure ServerAgent 2.2.3 as a service
+  template:
+    src: 'etc/systemd/system/serveragent.j2'
+    dest: '/etc/systemd/system/serveragent.service'
+    mode: '0644'
+#  notify: restart web services
+
+- name: Copy pibenchmark.sh, enableHotspot.sh, rotate and temp.sh
+  copy:
+    src: 'home/rpi64box/'
+    dest: '/home/rpi64box/scripts'
+    mode: '0744'
+    force: no
+#  notify: restart web services
+
+ 
+- name: change file permission for serverAgent/startAgent.sh
+  file:
+    path: '/home/rpi64box/ServerAgent-2.2.3/startAgent.sh'
+    owner: '{{ rpi64box_username }}'
+    group: '{{ rpi64box_username }}'
+    mode: '0744'
+
+- meta: flush_handlers

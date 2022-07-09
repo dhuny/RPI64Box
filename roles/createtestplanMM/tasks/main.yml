@@ -1,0 +1,99 @@
+---
+# Test plan for xx
+- name: check presence of '/var/www/moodle' directory
+  stat:
+    path: '/var/www/moodle'
+  register: moodle_home_dir
+# To change the path of the moodle dir change the rpi64box_moodle_source_dir 
+
+- name: Create module M Courses
+  shell: 'sudo -u www-data php {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/maketestcourse.php --shortname=SIZE_M --size=M'
+  async: 900
+  poll: 9
+  ignore_errors: false
+  when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+
+
+- name: Run Tests for mm
+  vars:
+   testfile: mm        # xx, ss, sm, mm, lm and lm 
+   asynctime: 300
+   asyncpoll: 6
+   shortname: SIZE_M  # SIZE_XS, SIZE_S, SIZE_M and SIZE_L 
+   size: M            # XS, S, M and L
+  block:
+    - name: Create Testplan for Course and user size as {{testfile}}
+      shell: 'sudo -u www-data php {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/maketestplan.php --shortname="{{shortname}}" --size="{{size}}" > {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+      async: "{{asynctime}}"
+      poll: "{{asyncpoll}}"
+      ignore_errors: false
+      register: cmd_link
+    - debug:
+        msg: cmd_link
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+    # for above command no output will be visible if same is redirected to file.
+      
+    - debug: var=cmd_link.stdout_lines
+    
+    
+    - name: Add the Change directory to {{path_to_save_jmeter_results}}/{{platform_moodle}}
+      lineinfile:
+        path: '{{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+    #   regexp: '.jmx'
+        insertbefore: '.jmx'
+        line: "mkdir -p {{path_to_save_jmeter_results}}/{{platform_moodle}} && cd {{path_to_save_jmeter_results}}/{{platform_moodle}}/ && "
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+      
+    - name: Create curl for jmx
+      lineinfile:
+        path: '{{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+    #   regexp: '.jmx'
+        insertbefore: '.jmx'
+        line: "curl "
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+       
+    - name: Create the curl {{testfile}} jmx
+      lineinfile:
+        path: '{{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+    #   regexp: '.jmx'
+        insertafter: '.jmx'
+        line: " --output {{testfile}}.jmx && curl "
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+      
+       
+    - name: Create the curl for {{testfile}} csv
+      lineinfile:
+        path: '{{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+    #   regexp: '.jmx'
+        insertafter: '.csv'
+        line: " --output {{testfile}}.csv "
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+
+    - name: Remove white space in file for {{testfile}} csv
+      replace:
+        path: '{{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+        regexp: '[ \n]'
+        replace: ' '
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+      
+
+    - name: Add other configurations to parameters to {{testfile}} file
+      lineinfile:
+        path: '{{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{testfile}}.links'
+        line: "~/apache-jmeter/bin/./jmeter -n -t ./{{testfile}}.jmx -Jusersfile=./{{testfile}}.csv -j ./{{testfile}}.log -l ./result-{{testfile}}.csv -e -o ./{{testfile}}/"
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+       
+    - name: Backup  moodle database with testplan-{{testfile}}
+      shell: 'cd ~ && sudo mysqldump -u {{rpi64box_username}} -p{{rpi64box_password}} moodle > ~/moodle-testplan-{{testfile}}.sql'
+      async: 500
+      poll: 30
+      become: yes
+      become_user: "{{rpi64box_username}}"
+
+    - name: Change permission and ownership of http://rpi64box.home/admin/tool/generator/cli/tests/ to {{ rpi64box_username }}
+      shell: 'sudo chown -R www-data:{{ rpi64box_username }} {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/'
+      async: 20
+      poll: 4
+      ignore_errors: false
+      when: moodle_home_dir.stat.exists and not moodle_home_dir.stat.islnk
+  

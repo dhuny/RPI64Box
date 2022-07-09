@@ -1,0 +1,105 @@
+---
+
+- name: get Moodle version '{{ rpi64box_moodle_branch }}' from git repository
+  git:
+    repo: 'git://git.moodle.org/moodle.git'
+    version: '{{ rpi64box_moodle_branch }}'
+    dest: '{{ rpi64box_moodle_source_dir }}'
+    depth: 1
+
+- name: create Moodle data and cache directories and set adequate permissions
+  file:
+    path: '{{ item }}'
+    state: 'directory'
+    owner: 'www-data'
+    group: '{{ rpi64box_username }}'
+    mode: 'ug+w,o-w'
+    recurse: 'yes'
+  with_items:
+    - '{{ rpi64box_moodle_source_dir }}'
+    - '{{ rpi64box_moodle_data_dir }}/repository'
+    - '{{ rpi64box_moodle_data_dir }}/temp'
+    - '{{ rpi64box_moodle_data_dir }}/backup'
+    - '/var/cache/moodle'
+    - '/var/cache/moodle-cache-backup'
+
+- name: set sticky bit for moodledata directory
+  file:
+    path: '{{ rpi64box_moodle_data_dir }}'
+    state: 'directory'
+    mode: 'g+s'
+    recurse: 'yes'
+
+- name: create file repository directory
+  file:
+    path: '/home/{{ rpi64box_username }}/files'
+    state: 'directory'
+    owner: '{{ rpi64box_username }}'
+    group: 'www-data'
+    mode: 'g+s'
+
+- name: link directories
+  file:
+    src: '{{ item.src }}'
+    path: '{{ item.path }}'
+    state: 'link'
+  with_items:
+    - { src: '/home/{{ rpi64box_username }}/files', path: '{{ rpi64box_moodle_data_dir }}/repository/files' }
+    - { src: '/media/usb', path: '{{ rpi64box_moodle_data_dir }}/repository/usb' }
+
+- name: configure temporary storage for Moodle cache
+  mount:
+    path: '{{ item.name }}'
+    src: 'tmpfs'
+    fstype: 'tmpfs'
+    opts: 'size={{ item.size }},mode=775,uid=www-data,gid=www-data'
+    dump: '0'
+    passno: '0'
+    state: 'mounted'
+  with_items:
+    - { name: '/var/cache/moodle', size: '64M' }
+    - { name: '{{ rpi64box_moodle_data_dir }}/temp', size: '64M' }
+    - { name: '{{ rpi64box_moodle_data_dir }}/sessions', size: '16M' }
+
+# https://github.com/HCPSS/ansible-role-moodle/blob/master/tasks/install.yml
+- name: install Moodle via CLI
+  command: '/usr/bin/php "{{ rpi64box_moodle_source_dir }}/admin/cli/install.php"
+    --lang="{{ rpi64box_moodle_lang }}"
+    --wwwroot="http://{{ rpi64box_hostname }}.{{ rpi64box_tld }}"
+    --dataroot="{{ rpi64box_moodle_data_dir }}"
+    --dbtype="mariadb"
+    --dbname="{{ rpi64box_moodle_db }}"
+    --prefix="{{ rpi64box_moodle_db_prefix }}"
+    --dbuser="{{ rpi64box_db_username }}"
+    --dbpass="{{ rpi64box_db_password }}"
+    --fullname="{{ rpi64box_moodle_name }}"
+    --shortname="{{ rpi64box_moodle_name }}"
+    --summary="{{ rpi64box_moodle_summary }}"
+    --adminuser="{{ rpi64box_moodle_username }}"
+    --adminpass="{{ rpi64box_moodle_password }}"
+    --adminemail="{{ rpi64box_moodle_username }}@{{ rpi64box_hostname }}.invalid"
+    --non-interactive
+    --allow-unstable
+    --agree-license'
+  args:
+    chdir: '{{ rpi64box_moodle_source_dir }}'
+    creates: '{{ rpi64box_moodle_source_dir }}/config.php'
+
+- name: set Moodle config file owner, group and permissions
+  file:
+    path: '{{ rpi64box_moodle_source_dir }}/config.php'
+    owner: 'www-data'
+    group: '{{ rpi64box_username }}'
+    mode: 'ug+w,o-w'
+
+- name: write extra parameters to the Moodle config file
+  lineinfile:
+    path: '{{ rpi64box_moodle_source_dir }}/config.php'
+    line: '$CFG->{{ item.name }} = {{ item.value }};'
+    insertbefore: '^\$CFG->directorypermissions'
+  with_items:
+    - { name: 'backuptempdir', value: "'{{ rpi64box_moodle_data_dir }}/backup'" }
+    - { name: 'xsendfile', value: "'X-Accel-Redirect'" }
+    - { name: 'xsendfilealiases', value: "array('/dataroot/' => $CFG->dataroot)" }
+    - { name: 'customfiletypes', value: "array(\n  (object)array(\n    'extension' => 'crt',\n    'icon' => 'sourcecode',\n    'type' => 'application/x-x509-ca-cert',\n    'customdescription' => 'X.509 CA certificate'\n  )\n)"}
+    - { name: 'showcampaigncontent', value: 'false' }

@@ -1,0 +1,25 @@
+---
+
+- name: write version file
+  template:
+    src: 'etc/rpi64box-info.j2'
+    dest: '/etc/{{ rpi64box_info_file }}'
+    mode: '0644'
+
+- name: update motd
+  template:
+    src: 'etc/motd.j2'
+    dest: '/etc/motd'
+    mode: '0644'
+
+- name: copy ascii logo file
+  copy:
+    src: 'etc/rpi64box-logo.txt'
+    dest: '/etc/{{ rpi64box_logo_file }}'
+    mode: '0644'
+
+- name: copy script to display ascii logo
+  template:
+    src: 'etc/update-motd.d/20-logo.j2'
+    dest: '/etc/update-motd.d/20-logo'
+    mode: '0755'

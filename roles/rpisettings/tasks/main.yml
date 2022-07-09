@@ -1,0 +1,31 @@
+---
+- name: reduce memory split down to 16Mb, as we are on a headless system on Ubuntu 20.04 (If not, ignore)
+  lineinfile:
+    path: '/boot/firmware/usercfg.txt'
+    line: 'gpu_mem=16'
+  ignore_errors: yes
+
+- name: reduce memory split down to 16Mb, as we are on a headless system on Ubuntu 22.04 (If nor, ignore)
+  lineinfile:
+    path: '/boot/firmware/config.txt'
+    line: 'gpu_mem=16'
+  ignore_errors: yes 
+
+#  notify:
+#   - reboot machine
+#    - wait for machine to come back
+
+# This is to enable hardware stop on casing like Pi-Top and works on Ubuntu 20.04
+- name: enable shutdown/startup hardware button
+  lineinfile:
+    path: '/boot/firmware/usercfg.txt'
+    line: 'dtoverlay=gpio-shutdown'
+    insertafter: '^# configuration files on the boot partition.'
+  ignore_errors: yes
+  
+#  notify:
+#    - reboot machine
+#    - wait for machine to come back
+
+
+- meta: flush_handlers

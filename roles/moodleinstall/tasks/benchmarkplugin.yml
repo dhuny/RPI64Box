@@ -1,0 +1,8 @@
+---
+- name: get Benchmark plugin version '{{ rpi64box_benchmark_plugin_version }}' from git repository
+  git:
+    repo: 'https://github.com/mikasmart/moodle-report_benchmark.git'
+    dest: '{{ rpi64box_moodle_source_dir }}/report/benchmark'
+    version: '{{ rpi64box_benchmark_plugin_version }}'
+    depth: 1
+

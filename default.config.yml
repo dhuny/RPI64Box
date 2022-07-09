@@ -1,0 +1,135 @@
+---
+# RPI64Box version below is based on MoodleBox v 3.9.0 of 2020-11-08 
+# RPI64Box version and release date.
+rpi64box_version: '0.9.0'
+rpi64box_release_date: '2021-10-23'
+rpi64box_name: 'RPI64Box'
+
+# MoodleBox version used for the creation of RPI64Box.
+moodlebox_version: '3.9.0'
+moodlebox_release_date: '2020-11-08'
+
+
+# RPI64Box hostname (taken from inventory).
+rpi64box_hostname: '{{ inventory_hostname }}'
+
+# RPI64Box top level domain name.
+# URL of RPI64Box is {{ rpi64box_hostname }}.{{ rpi64box_tld }}.
+rpi64box_tld: 'home'
+
+# RPI64Box main credentials.
+rpi64box_username: 'rpi64box'
+rpi64box_password: 'Rpi64box4$'
+
+# RPI64Box Wi-Fi static IP address.
+rpi64box_ip_address: '10.0.0.1/24'
+
+# RPI64Box DHCP range.
+rpi64box_dhcp_range_begin: "{{ rpi64box_ip_address | ipaddr('address') | ipmath(9) }}"
+rpi64box_dhcp_range_end: "{{ rpi64box_ip_address | ipaddr('address') | ipmath(253) }}"
+
+# RPI64Box external public DNS servers IP addresses.
+rpi64box_external_dns_ip_address:
+  - '1.1.1.1'  # Cloudflare privacy-first DNS
+  - '1.0.0.1'  # Cloudflare privacy-first DNS
+  # - '84.200.69.80' # DNS.WATCH
+  # - '84.200.70.40' # DNS.WATCH
+  # - '64.6.64.6' # Verisign
+  # - '64.6.65.6' # Verisign
+
+# RPI64Box db credentials.
+rpi64box_db_username: '{{ rpi64box_username }}'
+rpi64box_db_password: '{{ rpi64box_password }}'
+
+# RPI64Box db root password.
+rpi64box_db_root_password: '{{ rpi64box_password }}'
+
+# RPI64Box Wi-Fi settings.
+rpi64box_wifi_password: '{{ rpi64box_hostname }}'
+rpi64box_wifi_ssid: '{{ rpi64box_name }}'
+rpi64box_wifi_channel: '11'
+rpi64box_wifi_country: 'MU'
+
+# RPI64Box localisation parameters.
+rpi64box_default_locale: 'en_GB.UTF-8'
+rpi64box_locales:
+  - 'en_GB.UTF-8'
+  - 'en_AU.UTF-8'
+  - 'fr_FR.UTF-8'
+  - 'de_DE.UTF-8'
+  - 'es_ES.UTF-8'
+  - 'it_IT.UTF-8'
+rpi64box_timezone: 'Indian/Mauritius'
+
+# Public key filename.
+rpi64box_public_key_file: 'id_rsa.pub'
+
+# RPI64Box release info filename.
+rpi64box_info_file: 'rpi64box-info'
+
+# RPI64Box logo filename.
+rpi64box_logo_file: 'rpi64box-logo.txt'
+
+# RPI64Box Moodle default build settings.
+rpi64box_moodle_branch: 'MOODLE_310_STABLE'
+rpi64box_moodle_username: 'rpi64box'
+rpi64box_moodle_password: '{{ rpi64box_password }}'
+rpi64box_moodle_db: 'moodle'
+rpi64box_moodle_db_prefix: 'mdl_'
+rpi64box_moodle_lang: 'en'
+rpi64box_moodle_name: '{{ rpi64box_name }}'
+rpi64box_moodle_summary: |
+  <p><span lang='en' class='multilang'><a href='https://moodlebox.net/' target='_blank'>MoodleBox</a>, a <a href='https://moodle.org/' target='_blank'>Moodle 3.10.x</a> platform on <a href='https://www.raspberrypi.org/' target='_blank'>Raspberry Pi</a>.</span><span lang='fr' class='multilang'><a href='https://moodlebox.net/' target='_blank'>MoodleBox</a>, une plateforme <a href='https://moodle.org/' target='_blank'>Moodle 3.10.x</a> sur <a href='https://www.raspberrypi.org/' target='_blank'>Raspberry Pi</a>.</span><span lang='de' class='multilang'><a href='https://moodlebox.net/' target='_blank'>MoodleBox</a>, eine <a href='https://moodle.org/' target='_blank'>Moodle 3.10.x</a> Plattform auf <a href='https://www.raspberrypi.org/' target='_blank'>Raspberry Pi</a>.</span></p>
+  <p><span lang='en' class='multilang'>MoodleBox is made by <a href='https://blog.martignoni.net/a-propos/'>Nicolas Martignoni</a>.</span><span lang='fr' class='multilang'>MoodleBox est réalisée par <a href='https://blog.martignoni.net/a-propos/'>Nicolas Martignoni</a>.</span><span lang='de' class='multilang'>MoodleBox ist von <a href='https://blog.martignoni.net/a-propos/'>Nicolas Martignoni</a> hergestellt.</span></p>
+  <p><span lang='en' class='multilang'>Version {{ rpi64box_version }}, {{ rpi64box_release_date }}.</span><span lang='fr' class='multilang'>Version {{ rpi64box_version }}, {{ rpi64box_release_date }}.</span><span lang='de' class='multilang'>Version {{ rpi64box_version }}, {{ rpi64box_release_date }}.</span></p>
+rpi64box_moodle_source_dir: '/var/www/moodle'
+rpi64box_moodle_data_dir: '/var/www/moodledata'
+
+
+# RPI64Box default build options.
+rpi64box_update_firmware: 'false'
+rpi64box_set_hostname: 'true'
+rpi64box_set_timezone: 'true'
+rpi64box_set_locale: 'true'
+rpi64box_moodlebox_plugin_version: 'v2.8.0'
+rpi64box_benchmark_plugin_version: 'v1.4.1'
+rpi64box_mathjax_version: '2.7.9'
+
+rpi64box_build_type: 'release'
+
+# Raspberry default credentials.
+rpi64box_rpi_username: 'ubuntu'
+rpi64box_rpi_password: 'Rpi64box4$'
+
+# Raspberry default hostname.
+rpi64box_rpi_hostname: 'rpi64box'
+
+
+# The variables below are for the creation of test courses for performance testing of the hardware.
+# Provide your environment a name based on the [os]-[os-bit-depth]-[storage-type]
+# The same variables will be available in the client file. Please keep the same values in both files.
+
+# RPI64Box test Operating system
+# pi-32-SD | pi-64-SD | pi-32-SSD | pi-64-SSD | ubuntu-32-SD | ubuntu-32-SSD | ubuntu-64-SD | ubuntu-64-SSD
+# Mains  pi-32-SD |  pi-32-SSD | pi-64-SSD | ubuntu-64-SSD | ubuntu-64-SSD-Apache
+
+platform_moodle: 'ubuntu-64-SSD'
+
+# custom graph is set for MMCblock or SDA. The values are:  customgraph.txt | customgraph-sda.txt
+# If you are running the codes from SD card use customgraph.txt else use the sda one.
+custom_graph: 'customgraph-{{platform_moodle}}.txt'
+
+# PHP version is the most current used by system 32-bit uses 7.3 and 64-bit has 7.4. On Ubuntu 22.04 php upgraded to 8.1
+# Set to PHP 8.1 on Ubuntu 22.04. Also, comment out the php{php_version}-json in roles/packages/var/main as it no longer exists.
+php_version: '7.4'
+
+# maximum network transmission rate in KB/s for selected network.  iperf return 72.2 Mbits/s same was converted into KB/s. Now using 57.0 Mbits/s
+net_tx_max: '7296'  # for LAN it was considered as 933Mbps or 119424 kbits/s tx max unit is on KB/s
+
+# with a throughput of 120 the maximum number of requests per second is 3.11/s and with 240 it shall be 6.22/s. MM can handle only up to 2.8 requests/s
+# Here the starting value was set to one less than number of CPUs  for each second. Throughput neasured per minute.
+throughput: '180'
+
+# Path of saved files inside jmeter script. Keep as 'jmetertests' as this is in todo list to have a variable for path.
+path_to_save_jmeter_results: '~/jmetertests'
+jmeter_results_folder: 'jmetertests'

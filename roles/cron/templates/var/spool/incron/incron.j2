@@ -1,0 +1,6 @@
+{{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.reboot-server	IN_CLOSE_WRITE	/sbin/shutdown -r now
+{{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.shutdown-server	IN_CLOSE_WRITE	/sbin/shutdown -h now
+{{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.set-server-datetime	IN_CLOSE_WRITE	/bin/bash {{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.set-server-datetime
+{{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.newpassword	IN_CLOSE_WRITE	/bin/bash {{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/bin/changepassword.sh
+{{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.wifisettings	IN_CLOSE_WRITE	/bin/bash {{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/bin/changewifisettings.sh
+{{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/.resize-partition	IN_CLOSE_WRITE	/bin/bash {{ rpi64box_moodle_source_dir }}/admin/tool/rpi64box/bin/resizepartition.sh

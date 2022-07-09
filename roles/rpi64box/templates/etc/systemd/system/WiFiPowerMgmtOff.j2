@@ -1,0 +1,8 @@
+[Unit]
+After=network.service
+
+[Service]
+ExecStart=/home/rpi64box/scripts/enableHotspot.sh
+
+[Install]
+WantedBy=default.target

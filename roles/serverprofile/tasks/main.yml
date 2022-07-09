@@ -1,0 +1,112 @@
+---
+# Server profile, gather the server configurations into a single file.
+
+- name: Create folder if not exist {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}
+  shell: "mkdir -p {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}"
+#  become: yes
+#  become_user: moodlebox
+
+- name: Preparing the {{platform_moodle}}.config files for contents.
+  shell: echo '\n\n The configuration for ngnix php fpm in /etc/php/{{php_version}}/fpm/pool.d/www.conf is' > {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Getting the PHP configuration of php-fpm in /etc/php/{{php_version}}/fpm/pool.d/www.conf
+  shell: sed -n '/^pm./p' /etc/php/{{php_version}}/fpm/pool.d/www.conf >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+ 
+- name: Getting the configured throughput.
+  shell: echo '\n\n The throughput set in the generator template /admin/tool/generator/ is' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Getting the throughput from the generator template /admin/tool/generator/
+  shell: sed -n '/^        <stringProp name="throughput">${__property(throughput,throughput./p' /var/www/moodle/admin/tool/generator/testplan.template.jmx >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Preparing the xx.links files for contents.
+  shell: echo '\n\n The Average memory used by process given by ps -u www-data -o rss,cmd -C php-fpm| grep -i php-fpm | awk { sum+=$1 } END { printf ("%d%s\n", sum/NR/1024," MB") }\n' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Get the Average of Memory used by PHP per process in MB.
+  shell: ps --no-headers -o "rss,cmd" -C php-fpm{{php_version}} | awk '{ sum+=$1 } END { printf ("%d%s\n", sum/NR/1024,"Mb") }' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+
+- name: Total RAM Memory of Device Header.
+  shell: echo 'Check link https://www.raspberrypi.org/forums/viewtopic.php?t=244367. It seems that 32-bit can have a little more RAM than 64-bit but they never reach full value.' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Total RAM Memory of Device Header.
+  shell: echo 'Total RAM Memory on Device' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Total RAM Memory of Device
+  shell: free | grep Mem | awk '{perc=(($2/1024))}{print( perc)}' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: lscpu information
+  shell: echo 'CPU info as provided by lscpu' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: lscpu command run
+  shell: lscpu >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Architecture Information
+  shell: echo 'Linux Architecture information uname -a if armv71 then its 32-bit if armv8 or aarch64 then 64-bit' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Run the uname -a 
+  shell: uname -a >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Which version of Nginx is Running?
+  shell: echo 'Nginx version:' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Find the version of Nginx 
+  shell: nginx -v >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Which version of PHP is Running?
+  shell: echo 'PHP version:' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Find the version of PHP 
+  shell: php -v >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Which version of Mysql is Running?
+  shell: echo 'Mysql version:' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Find the version of Mysql 
+  shell: mysql -V >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+
+- name: Is Linux running from SD card or SSD disk?
+  shell: echo 'Check if Linux is Running of SD CARD or on SSD if mmcblk it is on SD card if /dev/sda it is SSD' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+
+- name: Run a check to find out if running on SD Card or SSD 
+  shell: findmnt -n -o SOURCE / >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+- name: Check database settings with Mysqltuner for tuning suggestions
+  shell: echo 'Check Database Configuration with mysqltuner settings \n\n' >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  
+
+- name: Run mysqltuner for some configuration suggestions
+  shell: sudo mysqltuner / >> {{rpi64box_moodle_source_dir}}/admin/tool/generator/cli/tests/{{platform_moodle}}.config
+  ignore_errors: false
+  async: 200
+  poll: 10
+ 
+- name: To do task. MysqlTuner settings should be done in /etc/mysql/my.cnf. This process can be automated
+  shell: echo 'In future the mysqlTuner should be handled by ansible'
+  ignore_errors: false
+
+  
+  
+  
