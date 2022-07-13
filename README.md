@@ -25,6 +25,7 @@ The instructions in this section cover the setting up of sample courses, users a
 3.	Connect via Wi-Fi to the hotspot using the password `rpi64box`.
 4.	Connect via SSH with username `rpi64box` and password `Rpi64Box`.
 5.	Visit /etc/netplan/01-netcfg.yaml to configure static IP address for LAN.
+
 		sudo nano /etc/netplan/01-netcfg.yaml
 6.	Apply the netplan changes.
 
