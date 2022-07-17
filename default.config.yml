@@ -113,7 +113,7 @@ rpi64box_rpi_hostname: 'rpi64box'
 # pi-32-SD | pi-64-SD | pi-32-SSD | pi-64-SSD | ubuntu-32-SD | ubuntu-32-SSD | ubuntu-64-SD | ubuntu-64-SSD
 # Mains  pi-32-SD |  pi-32-SSD | pi-64-SSD | ubuntu-64-SSD | ubuntu-64-SSD-Apache
 
-platform_moodle: 'ubuntu-64-SSD'
+platform_moodle: 'ubuntu-64-SD'
 
 # custom graph is set for MMCblock or SDA. The values are:  customgraph.txt | customgraph-sda.txt
 # If you are running the codes from SD card use customgraph.txt else use the sda one.
@@ -124,7 +124,7 @@ custom_graph: 'customgraph-{{platform_moodle}}.txt'
 php_version: '7.4'
 
 # maximum network transmission rate in KB/s for selected network.  iperf return 72.2 Mbits/s same was converted into KB/s. Now using 57.0 Mbits/s
-net_tx_max: '7296'  # for LAN it was considered as 933Mbps or 119424 kbits/s tx max unit is on KB/s
+net_tx_max: '119424'  # for LAN it was considered as 933Mbps or 119424 kbits/s tx max unit is on KB/s
 
 # with a throughput of 120 the maximum number of requests per second is 3.11/s and with 240 it shall be 6.22/s. MM can handle only up to 2.8 requests/s
 # Here the starting value was set to one less than number of CPUs  for each second. Throughput neasured per minute.
