@@ -116,4 +116,19 @@
   become: yes
   become_user: "{{rpi64box_username}}"
   
+  - name: Copy resetdb-sm.php to /tmp
+  copy:
+    src: resetdb-sm.php
+    dest: '/tmp'
+    mode: '0644'
+  become: yes
+  become_user: "{{rpi64box_username}}"
+ 
+
+- name: Move resetdb-sm.php to /var/www/moodle/admin/cli/ and change permissions to www-data:{{rpi64box_username}}
+  shell: sudo mv /tmp/resetdb-sm.php /var/www/moodle/admin/cli/ && sudo chown -R www-data:{{rpi64box_username}} /var/www/moodle/admin/cli/resetdb-sm.php
+  become: yes
+  become_user: "{{rpi64box_username}}"
+  
+  
   
