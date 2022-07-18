@@ -116,7 +116,7 @@
   become: yes
   become_user: "{{rpi64box_username}}"
   
-  - name: Copy resetdb-sm.php to /tmp
+- name: Copy resetdb-sm.php to /tmp
   copy:
     src: resetdb-sm.php
     dest: '/tmp'
