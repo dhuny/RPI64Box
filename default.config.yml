@@ -124,7 +124,7 @@ custom_graph: 'customgraph-{{platform_moodle}}.txt'
 php_version: '7.4'
 
 # maximum network transmission rate in KB/s for selected network.  iperf return 72.2 Mbits/s same was converted into KB/s. Now using 57.0 Mbits/s
-net_tx_max: '119424'  # for LAN it was considered as 933Mbps or 119424 kbits/s tx max unit is on KB/s
+#net_tx_max: '119424'  # for LAN it was considered as 933Mbps or 119424 kbits/s tx max unit is on KB/s
 
 # with a throughput of 120 the maximum number of requests per second is 3.11/s and with 240 it shall be 6.22/s. MM can handle only up to 2.8 requests/s
 # Here the starting value was set to one less than number of CPUs  for each second. Throughput neasured per minute.
