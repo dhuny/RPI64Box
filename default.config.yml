@@ -97,6 +97,14 @@ rpi64box_mathjax_version: '2.7.9'
 
 rpi64box_build_type: 'release'
 
+# RPI64Box RUBBoS default build settings
+# The installation details are for RUBBOS.Refer to https://ieeexplore.ieee.org/document/1226489 for more info.
+rpi64box_rubbos_repo: 'https://github.com/dhuny/RUBBoS.git'
+rpi64box_rubbos_branch: 'main'
+rpi64box_rubbos_source_dir: '/home/rpi64box/RUBBoS'
+#rpi64box_rubbos_source_dir: '/var/www/RUBBoS'
+
+
 # Raspberry default credentials.
 rpi64box_rpi_username: 'ubuntu'
 rpi64box_rpi_password: 'Rpi64box4$'
