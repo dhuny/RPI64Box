@@ -49,10 +49,10 @@
 
   
 # refer to https://vitux.com/how-to-install-php5-php8-on-ubuntu/ 
-- name: add repository ppa:ondrej/php, update and upgrade
-  shell: 'sudo add-apt-repository ppa:ondrej/php -y && sudo apt update && sudo apt upgrade -y'
-  async: 1800
-  poll: 50
+#- name: add repository ppa:ondrej/php, update and upgrade
+#  shell: 'sudo add-apt-repository ppa:ondrej/php -y && sudo apt update && sudo apt upgrade -y'
+#  async: 1800
+#  poll: 50
 #  ignore_errors: false  
 
 - name: install php5.6-fpm and php5.6-mysql
