@@ -1,0 +1,159 @@
+---
+
+- name: get RUBBoS fork version '{{ rpi64box_rubbos_branch }}' from git repository
+  git:
+    repo: '{{ rpi64box_rubbos_repo }}'
+   # version: '{{ rpi64box_rubbos_branch }}'
+    dest: '{{ rpi64box_rubbos_source_dir }}'
+    clone: yes
+#    update: yes
+#    depth: 1
+
+- name: create RUBBOS directories and set adequate permissions
+  file:
+    path: '{{ item }}'
+    state: 'directory'
+    owner: 'www-data'
+    group: '{{ rpi64box_username }}'
+    mode: 'ug+w,o-w'
+    recurse: 'yes'
+  with_items:
+    - '{{ rpi64box_rubbos_source_dir }}'
+    - '{{ rpi64box_rubbos_source_dir }}/PHP'
+
+- name: Copy NginX configuration for rubbos.rpi64box.home
+  copy:
+    src: 'etc/nginx/sites-available/rubbos.rpi64box.home'
+    dest: '/etc/nginx/sites-available/rubbos.rpi64box.home'
+#    mode: '0440'
+    #validate: 'visudo -cf %s'
+
+- name: Copy Database configuration for rubbos.rpi64box.home
+  copy:
+    src: 'var/www/RUBBoS/PHP/config.php'
+    dest: '{{ rpi64box_rubbos_source_dir }}/PHP/config.php'
+#    mode: '0440'
+    #validate: 'visudo -cf %s'
+
+- name: Change permission and ownership of /PHP folder to www-data
+  shell: 'sudo chown -R www-data:rpi64box {{rpi64box_rubbos_source_dir}}/PHP/'
+  async: 20
+  poll: 4
+#  ignore_errors: false
+  
+- name: Create Sybmolic link to enable rubbos.rpi64box.home with ln -s command and restart nginx service
+  shell: 'sudo ln -s /etc/nginx/sites-available/rubbos.rpi64box.home /etc/nginx/sites-enabled/rubbos.rpi64box.home'
+  async: 20
+  poll: 4
+#  ignore_errors: false
+
+  
+# refer to https://vitux.com/how-to-install-php5-php8-on-ubuntu/ 
+- name: add repository ppa:ondrej/php, update and upgrade
+  shell: 'sudo add-apt-repository ppa:ondrej/php && sudo apt update && sudo apt upgrade -y'
+  async: 1800
+  poll: 50
+#  ignore_errors: false  
+
+- name: install php5.6-fpm and php5.6-mysql
+  shell: 'sudo apt install php5.6-fpm php5.6-mysql -y'
+  async: 300
+  poll: 4
+#  ignore_errors: false
+  
+- name: Restart Nginx
+  shell: 'sudo service nginx restart'
+  async: 60
+  poll: 4
+#  ignore_errors: false
+
+- name: Download RUBBoS small database for installation and extract in /tmp.
+  shell: 'cd /tmp && wget https://dllegacy.ow2.org/rubbos/smallDB-rubbos.tgz && tar -zxvf smallDB-rubbos.tgz'
+  async: 300
+  poll: 4
+#  ignore_errors: false
+  
+- name: Copy the database structure rubbos.sql from the RUBBoS folder to /tmp.
+  shell: 'sudo cp {{rpi64box_rubbos_source_dir}}/database/rubbos.sql /tmp/rubbos.sql'
+  async: 40
+  poll: 4
+  ignore_errors: false
+
+- name: Copy the database structure test.sql from the RUBBoS folder to /tmp.
+  shell: 'sudo cp {{rpi64box_rubbos_source_dir}}/database/test.sql /tmp/test.sql'
+  async: 40
+  poll: 4
+  ignore_errors: false
+
+#- name: Create an empty rubbos database in mysql.
+#  shell: mysql -u rpi64box -pRpi64box4$ -e 'create database rubbos'
+# async: 40
+#  poll: 4
+#  ignore_errors: false
+  
+- name: Import rubbos.sql to rubbos database.
+  shell: 'mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} < /tmp/rubbos.sql'
+  async: 100
+  poll: 4
+  ignore_errors: false
+  
+- name: Import test.sql to rubbos database.
+  shell: 'mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos < /tmp/test.sql'
+  async: 40
+  poll: 4
+  ignore_errors: false
+
+
+- name: Import users.sql to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/users.data" into table users fields terminated by "\t";'
+  async: 300
+  poll: 4
+  ignore_errors: false
+  
+- name: Import stories.data to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/stories.data" into table stories fields terminated by "\t";'
+  async: 300
+  poll: 10
+  ignore_errors: false
+  
+- name: Import comments.data to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/comments.data" into table comments fields terminated by "\t";'
+  async: 300
+  poll: 10
+  ignore_errors: false
+
+- name: Import old_stories.sql to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/old_stories.data" into table old_stories fields terminated by "\t";'
+  async: 900
+  poll: 45
+  ignore_errors: false
+  
+- name: Import old comments.sql to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/old_comments.data" into table old_comments fields terminated by "\t";'
+  async: 1300
+  poll: 600
+  ignore_errors: false
+  
+- name: Import submissions.sql to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/submissions.data" into table submissions fields terminated by "\t";'
+  async: 300
+  poll: 9
+  ignore_errors: false
+  
+- name: Import moderator.sql to rubbos database.
+  shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/moderator_log.data" into table moderator_log fields terminated by "\t";'
+  async: 300
+  poll: 9
+  ignore_errors: false
+  
+#- name: Install rcp server and rcp client.
+#  shell: ''
+#  async: 300
+#  poll: 4
+#  ignore_errors: false
+  
+- name: To edit /etc/hosts.equiv and add + ubuntu to the list. (Not implemented yet)
+  shell: 'echo "Hello World"'
+  async: 20
+  poll: 4
+  ignore_errors: false
