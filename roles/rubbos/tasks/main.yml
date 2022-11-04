@@ -130,7 +130,7 @@
   
 - name: Import old comments.sql to rubbos database.
   shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/old_comments.data" into table old_comments fields terminated by "\t";'
-  async: 2700
+  async: 3300
   poll: 45
   ignore_errors: false
   
