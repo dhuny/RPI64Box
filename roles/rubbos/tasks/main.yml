@@ -125,13 +125,13 @@
 - name: Import old_stories.sql to rubbos database.
   shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/old_stories.data" into table old_stories fields terminated by "\t";'
   async: 900
-  poll: 45
+  poll: 30
   ignore_errors: false
   
 - name: Import old comments.sql to rubbos database.
   shell: mysql -u {{rpi64box_db_username}} -p{{rpi64box_db_password}} rubbos -e 'load data LOCAL infile "/tmp/old_comments.data" into table old_comments fields terminated by "\t";'
-  async: 1300
-  poll: 600
+  async: 1600
+  poll: 30
   ignore_errors: false
   
 - name: Import submissions.sql to rubbos database.
